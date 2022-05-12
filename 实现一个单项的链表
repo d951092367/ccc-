@@ -1,0 +1,77 @@
+#define _CRT_SECURE_NO_WARNINGS 1
+#include<iostream>
+using namespace std;
+//定义一个节点
+class Node
+{
+public:
+	int data;
+	Node *next;
+};
+//定义一个单向链表
+class Link_t
+{
+public:
+	//初始化 头部指针没有指向任何值 尾部指针也没有指向任何值
+	Link_t()
+	{
+		header = NULL;
+		wbu = NULL;
+		size = 0;
+	}
+	void Linked(Node* n1)
+	{
+		if(size == 0)  //表明首次链接 如果时首次链接就将这个节点设置为头部 并且把尾部也设置成这个节点
+		{
+			header = n1;
+			wbu = n1;
+			(*n1).next = NULL;   //尾部的下一个节点设置为空 这样一个header-Null 的链表形成
+			size += 1;
+		}
+		else 
+		{
+			(*wbu).next = n1; 
+			wbu = n1;
+			(*n1).next = NULL;
+			size += 1;
+		}
+	}
+	void printAll()      //将链表输出
+	{
+		if (size == 0)
+		{
+			cout << "此链表为空!!!!" << endl;
+		}
+		else
+		{
+			Node* a = header;
+			for (int i = 0; i < size; i++)
+			{
+				cout << a->data;
+				a = a->next;
+			}
+		}
+	}
+
+	int getsize()
+	{
+		return size;
+	}
+private:
+	int size;
+	Node* header;   
+	Node* wbu;
+	
+};
+int main()
+{
+	//创建一个新链表
+	Link_t l;
+	for (int i = 0; i < 10; i++)
+	{
+		Node * a= new Node;
+		a->data = i;
+		l.Linked(a);
+	}
+	l.printAll();
+}
