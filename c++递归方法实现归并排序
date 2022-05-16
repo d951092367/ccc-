@@ -11,77 +11,90 @@ void merge(int* arr, int left, int right, int mid)
 	//整体排序的步骤就是新创建一个列表 
 	//创建一个可以容纳这些数据的列表
 	int* arr1 = new int[right - left + 1];
-	int i = left;
-	int z =mid+1;
+	int l_d = left;
+	int m_d = mid + 1;
+	int q_s = left;
 	int k = 0;
-	while (true)
+	while (true)   //右边越界了
 	{
-		if (arr[i]<=arr[z])
+		if (arr[l_d]>arr[m_d])
+		{
+			arr1[k] = arr[m_d];
+			m_d += 1;
+			k++;
+			if (m_d>right)
+			{
+				break;
+			}
+		}
+		else if (arr[l_d]<=arr[m_d])   //左边越界了
+		{
+			arr1[k] = arr[l_d];
+			k++;
+			l_d++;
+			if (l_d>mid)
+			{
+				break;
+			}
+		}
+		
+		
+
+		
+
+		
+	}
+	while (l_d<=mid)
+	{
+		for (int i = l_d; i <= mid; i++)
 		{
 			arr1[k] = arr[i];
-			i++;
 			k++;
 		}
-		else if (arr[i]>arr[z])
+		break;
+	}
+	while (m_d <= right)
+	{
+		for (int i = m_d; i <= right; i++)
 		{
-			arr1[k] = arr[z];
-			z++;
+			arr1[k] = arr[i];
 			k++;
-
 		}
-		//说明左边越界了;
-		if (i>mid)
-		{
-			for (int c = z; c <= right; c++)
-			{
-				arr1[k] = arr[c];
-				k++;
-			}
-			break;
-		}
-	
-		else if(z>right) //说明右边越界了
-		{
-
-			for (int c = i; c <= mid; c++)
-			{
-				arr1[k] = arr[c];
-				k++;
-			}
-			break;
-
-		}
+		break;
 	}
 	//拷贝数据
-	for (i = 0; i < right - left + 1; i++)
+	for (int i = 0; i < (right - left + 1); i++)
 	{
-		arr[left] = arr1[i];
-		left += 1;
+		arr[q_s] = arr1[i];
+		q_s++;
 	}
-	delete[](arr1);
+	
 
 }
 void g_b(int* arr, int left, int right)
 {
 	//归并排序步骤，排序左边，排序右边，然后再整体排序
 	int mid = (right + left) / 2;
-	if (mid==left)
+	if (left==right)
 	{
 		return;
 	}
 	//先对左边排序
-	g_b(arr,left, mid);
+	g_b(arr, left, mid);
 	//对右边排序
 	g_b(arr, mid + 1, right);
 	//整体做一个排序
 	merge(arr, left, right, mid);
+	
 }
 int main()
 {
-	int arr[10] = { 1,2,3,6,7,8,9,10,13,25 };
+	int arr[10] = { 3,2,1,10,25,666,23,12,56,13};
+	
+	
 	g_b(arr, 0, 9);
-	for (int i = 0; i<10; i ++)
+	for (int i = 0; i < 10; i++)
 	{
-		cout << arr[i]<<" ";
+		cout << arr[i] << " ";
 	}
 }
