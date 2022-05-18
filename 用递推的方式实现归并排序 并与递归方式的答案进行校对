@@ -1,0 +1,218 @@
+#define _CRT_SECURE_NO_WARNINGS 1
+#include<stdio.h>
+#include<iostream>
+#include<string>
+#include<vector>
+#include<ctime>
+#include<algorithm>
+using namespace std;
+void print(int* arr, int left, int right)
+{
+	for (int i = left; i < right + 1; i++)
+	{
+		cout << " " << arr[i];
+	}
+	cout << endl;
+}
+//实现归并排序 递推办法办法
+void merge(int* arr, int left, int right, int mid)
+{
+	//整体排序的步骤就是新创建一个列表 
+	//创建一个可以容纳这些数据的列表
+	int* arr1 = new int[right - left + 1];
+	int l_d = left;
+	int m_d = mid + 1;
+	int q_s = left;
+	int k = 0;
+	while (true)   //右边越界了
+	{
+		if (arr[l_d]>arr[m_d])
+		{
+			arr1[k] = arr[m_d];
+			m_d += 1;
+			k++;
+			if (m_d>right)
+			{
+				break;
+			}
+		}
+		else if (arr[l_d]<=arr[m_d])   //左边越界了
+		{
+			arr1[k] = arr[l_d];
+			k++;
+			l_d++;
+			if (l_d>mid)
+			{
+				break;
+			}
+		}
+		
+		
+
+		
+
+		
+	}
+	while (l_d<=mid)
+	{
+		for (int i = l_d; i <= mid; i++)
+		{
+			arr1[k] = arr[i];
+			k++;
+		}
+		break;
+	}
+	while (m_d <= right)
+	{
+		for (int i = m_d; i <= right; i++)
+		{
+			arr1[k] = arr[i];
+			k++;
+		}
+		break;
+	}
+	//拷贝数据
+	for (int i = 0; i < (right - left + 1); i++)
+	{
+		arr[q_s] = arr1[i];
+		q_s++;
+	}
+	
+	delete[]arr1;
+	
+
+}
+//递推的办法就是先 给这个数组2 2  2.。。。。。。一组 排序 然后 在4 4 4。。。。一组 然后2^n一组部分排序 
+//最后得到一个整体有序的数组
+void g_b(int* arr, int left, int right)
+{
+	//判断一个的情况
+	if (left==right)
+	{
+		return;
+	}
+	if (right - left == 1)
+	{
+		if (arr[left] > arr[right])
+		{
+			int max = arr[left];
+			arr[left] = arr[right];
+			arr[right] = max;
+
+
+		}
+		return;
+	}
+	int step = 1;
+	int flag = 0;
+	int a = left;
+	while (left+step<=right)
+	{
+		
+		
+		int z_zzb = left;
+		
+		int j_sq = 0;
+		while (true)
+		{
+
+			
+			int y_zzb=0;
+			int mid = 0;
+			int y_zyb=0;
+			z_zzb = a+j_sq * step;
+			j_sq += 1;
+			y_zzb =a+ j_sq * step;
+			j_sq += 1;
+			if (y_zzb - 1 >= right)
+			{
+				break;
+			}
+			y_zyb = y_zzb + step - 1;
+			if (y_zyb > right)
+			{
+				y_zyb = right;
+			}
+			mid = z_zzb + step - 1;
+			merge(arr, z_zzb, y_zyb, mid);
+			
+			
+
+		}
+		step *= 2;
+	}
+		
+	
+}
+//递归的方法实现 归并排序
+
+void g_b1(int* arr, int left, int right)
+{
+	//归并排序步骤，排序左边，排序右边，然后再整体排序
+	int mid = (right + left) / 2;
+	if (left == right)
+	{
+		return;
+	}
+	//先对左边排序
+	g_b1(arr, left, mid);
+	//对右边排序
+	g_b1(arr, mid + 1, right);
+	//整体做一个排序
+	merge(arr, left, right, mid);
+
+}
+//实现两种方法结果的比较 
+int dui_shuqi(int n)
+{
+	int k = 0;
+	while (k<n)
+	{
+		//随机生成一个数组
+		int long1 = 1+rand() % 1000;   //数组的长度
+		int* arr1 = new int[long1];
+		int left = rand() % long1;
+		int right = rand() % long1;
+		int* arr2 = new int[long1];;
+		if (left > right)
+		{
+			int a = left;
+			left = right;
+			right = a;
+		}
+		for (int i = 0; i < long1; i++)
+		{
+			arr1[i] = rand() % 999;
+			arr2[i] = arr1[i];
+			
+		}
+		
+		
+		g_b(arr1, left, right);
+		
+		g_b1(arr2, left, right);
+		
+		for (int i = 0; i < long1; i++)
+		{
+			if (arr2[i] != arr1[i])
+			{
+				
+				
+				cout << "出错了！------------------";
+				return 0;
+			}
+		}
+		k++;
+		delete[]arr2;
+		delete[]arr1;
+
+	}
+	cout << "完成测试！";
+	return 1;
+
+}
+int main()
+{
+	srand(time ( NULL));
+	dui_shuqi(1000);
+}
