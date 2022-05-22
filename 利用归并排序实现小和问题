@@ -1,0 +1,112 @@
+#include<string>
+#include<vector>
+#include<algorithm>
+using namespace std;
+//利用递归排序实现小和的 问题 小和问题：就是一个数组 求每个数字前面比它小的数
+//的所有数字之和
+int merge(int* arr, int left, int right, int mid)
+{
+	int count = 0;
+	//整体排序的步骤就是新创建一个列表 
+	//创建一个可以容纳这些数据的列表
+	int* arr1 = new int[right - left + 1];
+	int l_d = left;
+	int m_d = mid + 1;
+	int q_s = left;
+	int k = 0;
+	while (true)   //右边越界了
+	{
+		if (arr[l_d] > arr[m_d])
+		{
+			arr1[k] = arr[m_d];
+			m_d += 1;
+			k++;
+			if (m_d > right)
+			{
+				break;
+			}
+		}
+		else if (arr[l_d] <arr[m_d])   
+		{
+			arr1[k] = arr[l_d];
+			//如果右边的大于左边 这是已经排好序的数组 说明右边
+			//重这个数起一直比左边这个大
+			count += arr1[k] * (right - m_d + 1);
+			k++;
+			l_d++;
+			if (l_d > mid)
+			{
+				break;
+			}
+		}
+		else if(arr[l_d]=arr[m_d])
+		{
+			arr1[k] = arr[m_d];
+			m_d += 1;
+			k++;
+			if (m_d > right)
+			{
+				break;
+			}
+		}
+
+
+
+
+
+
+	}
+	while (l_d <= mid)
+	{
+		for (int i = l_d; i <= mid; i++)
+		{
+			arr1[k] = arr[i];
+			k++;
+		}
+		break;
+	}
+	while (m_d <= right)
+	{
+		for (int i = m_d; i <= right; i++)
+		{
+			arr1[k] = arr[i];
+			k++;
+		}
+		break;
+	}
+	//拷贝数据
+	for (int i = 0; i < (right - left + 1); i++)
+	{
+		arr[q_s] = arr1[i];
+		q_s++;
+	}
+
+	return count;
+
+
+}
+int g_b(int* arr, int left, int right)
+{
+	int count = 0;
+	//归并排序步骤，排序左边，排序右边，然后再整体排序
+	int mid = (right + left) / 2;
+	if (left == right)
+	{
+		return count;
+	}
+	//先对左边排序
+	count+=g_b(arr, left, mid);
+	//对右边排序
+	count += g_b(arr, mid + 1, right);
+	//整体做一个排序
+	count += merge(arr, left, right, mid);
+
+	return count;
+}
+int main()
+{
+	int arr[3] = {1,2,3};
+	int a=g_b(arr, 0, 2);
+	cout << a;
+	
+}
