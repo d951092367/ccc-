@@ -1,0 +1,86 @@
+#define _CRT_SECURE_NO_WARNINGS 1
+#include<stdio.h>
+#include<iostream>
+#include<math.h>
+#include<ctime>
+#include<vector>
+using namespace std;
+void print(int* arr, int l, int r)
+{
+	for (int i = l; i < r + 1; i++)
+	{
+		cout << arr[i] << " ";
+	}
+	cout << endl;
+}
+//实现荷兰国旗问题 
+//荷兰国旗问题就是 挑一个数 把大于它的数放 右边 小于它的数放在左边
+//要求不能开辟新的数组
+void swap(int* arr, int left, int right)
+{
+	int huan = arr[left];
+	arr[left] = arr[right];
+	arr[right] = huan;
+
+}
+int* h_lgq(int* arr, int L, int R, int m_bs)
+{
+	int xy_area = L - 1;
+	int dy_area = R + 1;
+	int left = L;
+	int right = R;
+	while (true)
+	{
+		if (left == dy_area)
+		{
+			break;
+		}
+		if (arr[left] < m_bs)
+		{
+			swap(arr, left, (xy_area + 1));
+			xy_area++;
+			left++;
+
+		}
+		else if (arr[left] == m_bs)
+		{
+			left++;
+
+		}
+		else if (arr[left] > m_bs)
+		{
+			swap(arr, left, right);
+			right--;
+			dy_area--;
+		}
+
+	}
+	int* arrj = new int[2];
+	arrj[0] = xy_area;
+	arrj[1] = dy_area;
+	return arrj;
+
+}
+
+void k_p(int* arr, int L, int R)
+{
+	if (L >= R)
+	{
+		return;
+	}
+	int s_j = rand() % (R - L) + L;
+	int* arrjj = h_lgq(arr, L, R, arr[s_j]);
+	k_p(arr, L, arrjj[0]);
+	k_p(arr, arrjj[1], R);
+	delete[]arrjj;
+
+
+}
+int main()
+{
+	srand(time(NULL));
+	int arr[10] = { 1,5,8,9,4,6,7,8,9,10 };
+	k_p(arr, 1, 9);
+	print(arr, 0, 9);
+	return 0;
+}
