@@ -1,0 +1,106 @@
+#define _CRT_SECURE_NO_WARNINGS 1
+#include<stdio.h>
+#include<iostream>
+#include<math.h>
+#include<vector>
+using namespace std;
+void print(int* arr, int l, int r)
+{
+	for (int i = l; i < r + 1; i++)
+	{
+		cout << arr[i] << " ";
+	}
+	cout << endl;
+}
+//实现荷兰国旗问题 
+//荷兰国旗问题就是 挑一个数 把大于它的数放 右边 小于它的数放在左边
+//要求不能开辟新的数组
+void swap(int* arr, int left, int right)
+{
+	int huan = arr[left];
+	arr[left] = arr[right];
+	arr[right] = huan;
+
+}
+int* h_lgq(int* arr, int L, int R, int m_bs)
+{
+	int xy_area = L - 1;
+	int dy_area = R + 1;
+	int left = L;
+	int right = R;
+	while (true)
+	{
+		if (left == dy_area)
+		{
+			break;
+		}
+		if (arr[left] < m_bs)
+		{
+			swap(arr, left, (xy_area + 1));
+			xy_area++;
+			left++;
+
+		}
+		else if (arr[left] == m_bs)
+		{
+			left++;
+
+		}
+		else if (arr[left] > m_bs)
+		{
+			swap(arr, left, right);
+			right--;
+			dy_area--;
+		}
+
+	}
+	int* arrj = new int[4];
+	arrj[0] = L;
+	arrj[1] = xy_area;
+	arrj[2] = dy_area;
+	arrj[3] = R;
+	return arrj;
+
+}
+
+void k_p(int* arr, int L, int R)
+{
+	if (L>R)
+	{
+		return;
+	}
+	vector<int>v1;
+	v1.push_back(R);
+	v1.push_back(L);
+	while (!v1.empty())
+	{
+		int LL = v1.back();
+		v1.pop_back();
+		int RR = v1.back();
+		v1.pop_back();
+		if (LL<=RR)
+		{
+			int* arrj=h_lgq(arr, LL, RR,arr[RR]);
+			v1.push_back(arrj[3]);
+			v1.push_back(arrj[2]);
+			v1.push_back(arrj[1]);
+			v1.push_back(arrj[0]);
+			delete[]arrj;
+		}
+
+	}
+
+
+	
+
+	
+}
+int main()
+{
+	
+	int arr[10] = { 1,5,8,9,4,6,7,8,9,10 };
+	k_p(arr, 0, 9);
+	print(arr, 0, 9);
+	
+	return 0;
+}
