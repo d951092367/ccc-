@@ -1,0 +1,182 @@
+
+//问题描述 就是有一个数组 现在给出一个范围 要找出在这个数组中 有多少子数组的和 在这个范围 （子数组必须时连续的）
+
+
+#define _CRT_SECURE_NO_WARNINGS 1
+#include<stdio.h>
+#include<iostream>
+#include<string>
+#include<vector>
+#include<algorithm>
+using namespace std;
+void print(int* arr, int l, int r)
+{
+	for (int i = l; i <= r ; i++)
+	{
+		cout << arr[i] << " ";
+	}
+	cout << endl;
+}
+//实现归并排序 递归办法
+int merge(int* arr, int left, int right, int mid,int lower, int higher)
+{
+	
+	int count = 0;
+	//整体排序的步骤就是新创建一个列表 
+	//创建一个可以容纳这些数据的列表
+	int* arr1 = new int[right - left + 1];
+	int l_d = left;
+	int m_d = mid + 1;
+	int q_s = left;
+	int k = 0;
+	//这里就是统计了
+	int new_left = left;
+	int new_right = mid;
+	for (int i = m_d; i <= right; i++)
+	{
+		int new_higher = arr[i] - lower;
+		int new_lower = arr[i] - higher;
+		//找到左边区域
+		for (int j = new_left; j <= mid; j++)
+		{
+			if (arr[j]>=new_lower)
+			{
+				new_left = j;
+				break;
+			}
+			if (j == mid)
+			{
+				new_left = j+1;
+			}
+		}
+		//找到右边区域
+		for (int j = new_right; j >= left; j--)
+		{
+			if (arr[j]<= new_higher)
+			{
+				new_right = j;
+				break;
+			}
+			if (j == left)
+			{
+				new_right = j - 1;
+			}
+		}
+		if (new_left>mid || new_right<left || new_left>new_right)
+		{
+			break;
+		}
+		count +=(new_right-new_left + 1);
+	}
+
+
+	//-----------
+	while (true)   //右边越界了
+	{
+		if (arr[l_d] > arr[m_d])
+		{
+			arr1[k] = arr[m_d];
+			m_d += 1;
+			k++;
+			if (m_d > right)
+			{
+				break;
+			}
+		}
+		else if (arr[l_d] <= arr[m_d])   //左边越界了
+		{
+			arr1[k] = arr[l_d];
+			k++;
+			l_d++;
+			if (l_d > mid)
+			{
+				break;
+			}
+		}
+
+
+
+
+
+
+	}
+	while (l_d <= mid)
+	{
+		for (int i = l_d; i <= mid; i++)
+		{
+			arr1[k] = arr[i];
+			k++;
+		}
+		break;
+	}
+	while (m_d <= right)
+	{
+		for (int i = m_d; i <= right; i++)
+		{
+			arr1[k] = arr[i];
+			k++;
+		}
+		break;
+	}
+	//拷贝数据
+	for (int i = 0; i < (right - left + 1); i++)
+	{
+		arr[q_s] = arr1[i];
+		q_s++;
+	}
+
+	delete[]arr1;
+	return count;
+
+
+}
+int g_b(int* arr, int left, int right,int lower,int higher)
+{
+	int count = 0;
+	//归并排序步骤，排序左边，排序右边，然后再整体排序
+	int mid = (right + left) / 2;
+	if (left == right)
+	{
+
+		return 0;
+	}//先对左边排序
+	count + g_b(arr, left, mid,lower,higher);
+	//对右边排序
+	count += g_b(arr, mid + 1, right,lower, higher);
+	//整体做一个排序
+	count+=merge(arr, left, right, mid, lower, higher);
+	return count;
+
+}
+
+void qz_h(int* arr, int l, int r)
+{
+	int count = 0;
+	for (int i = l; i <= r; i++)
+	{
+		count += arr[i];
+		arr[i] = count;
+	}
+}
+int min_sbuz(int* arr, int left, int right, int lower, int higher)
+{
+	int count = 0;
+	for (int i = left; i <= right; i++)
+	{
+		if (arr[i] >= lower && arr[i] <= higher)
+		{
+			count++;
+		}
+	}
+	qz_h(arr, left, right);
+	count += g_b(arr, left, right, lower, higher);
+	return count;
+}
+int main()
+{
+	
+	int arr[3] = {1,2,3};
+	int a=min_sbuz(arr, 0, 2, 1, 5);
+	cout << a;
+	
+}
