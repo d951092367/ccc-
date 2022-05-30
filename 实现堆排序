@@ -1,0 +1,123 @@
+#define _CRT_SECURE_NO_WARNINGS 1
+#include<stdio.h>
+#include<iostream>
+#include<string>
+#include<vector>
+#include<algorithm>
+//智能指针  这就把创建的类释放掉了
+#include<memory>
+using namespace std;
+//实现堆排序的方法 
+//1.建立堆
+//2.删除堆顶
+//3.下沉堆
+void print(int* arr, int l, int r)
+{
+	for (int i = l; i < r + 1; i++)
+	{
+		cout << arr[i] << " ";
+	}
+	cout << endl;
+}
+void swap(int* arr, int left, int right)
+{
+	int a = arr[left];
+	arr[left] = arr[right];
+	arr[right] = a;
+}
+void heap_inest(int *arr, int dui_top, int dui_last)
+{
+	if (dui_top==dui_last)
+	{
+		return;
+	}
+	//记录儿子当前的下标
+	int son_index = dui_last;
+	//记录父亲的下标;
+	int fat_index = (son_index - 1) / 2;
+	while (true)
+	{
+		//建立一个大根堆吧
+		if (arr[son_index] > arr[fat_index])
+		{
+			swap(arr, son_index, fat_index);
+		}
+		else   //如果儿子大于父亲说明就不用换了
+		{
+			return;
+		}
+		son_index = fat_index;
+		fat_index = (son_index - 1) / 2;
+		//说明儿子已经到了队顶了hhh
+		if (son_index==dui_top)
+		{
+			return;
+		}
+
+	}
+
+
+}
+
+void heap_sink(int* arr, int dui_top, int dui_last)
+{
+	
+	if (dui_top == dui_last)
+	{
+		return;
+	}
+	//记录儿子当前的下标
+	int fat_index = dui_top;
+	//记录父亲的下标;
+	int son_index = fat_index *2 + 1;
+	while (son_index<=dui_last)
+	{  //因为有一个左孩子还有一个右孩子 所以要比较这两个孩子谁大谁小 应为要挑一个最大的当队顶
+		if (son_index + 1 <= dui_last)
+		{
+			arr[son_index] >= arr[son_index + 1] ? son_index : (son_index++);
+		}
+		if (arr[fat_index]<arr[son_index])
+		{
+			swap(arr, fat_index, son_index);
+		}
+		else
+		{
+			return;
+		}
+		fat_index = son_index;
+		son_index = fat_index *2 + 1;
+	}
+
+
+	
+
+}
+void d_p(int* arr, int left ,int right)
+{
+	if (left ==right)
+	{
+		return;
+	}
+	//建立堆
+	int num_now;
+	for (num_now = left; num_now <= right; num_now++)
+	{
+		heap_inest(arr, left, num_now);
+	}
+	//下沉堆
+	int virtual_duilast = right;
+	while (virtual_duilast!=left)
+	{
+		swap(arr, left, virtual_duilast);
+		virtual_duilast--;
+		heap_sink(arr, left, virtual_duilast);
+	}
+	
+}
+int main()
+{
+	int arr[14] = { 1,5,6,4,7,9,8,10,56,10,10,10,10,10 };
+	d_p(arr, 0, 13);
+	print(arr, 0, 13);
+	return 0;
+}
