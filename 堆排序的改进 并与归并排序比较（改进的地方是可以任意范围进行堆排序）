@@ -1,0 +1,273 @@
+#define _CRT_SECURE_NO_WARNINGS 1
+#include<stdio.h>
+#include<iostream>
+#include<string>
+#include<vector>
+#include<algorithm>
+//智能指针  这就把创建的类释放掉了
+#include<memory>
+using namespace std;
+//实现堆排序的方法 
+//1.建立堆
+//2.删除堆顶
+//3.下沉堆
+void print(int* arr, int l, int r)
+{
+	for (int i = l; i < r + 1; i++)
+	{
+		cout << arr[i] << " ";
+	}
+	cout << endl;
+}
+void swap(int* arr, int left, int right)
+{
+	int a = arr[left];
+	arr[left] = arr[right];
+	arr[right] = a;
+}
+void heap_inest(int* arr, int dui_top, int dui_last)
+{
+	if (dui_top == dui_last)
+	{
+		return;
+	}
+	//记录儿子当前的下标
+	int son_index = dui_last;
+	//记录父亲的下标;
+	int fat_index = (son_index - 1) / 2;
+	while (true)
+	{
+		//建立一个大根堆吧
+		if (arr[son_index] > arr[fat_index])
+		{
+			swap(arr, son_index, fat_index);
+		}
+		else   //如果儿子大于父亲说明就不用换了
+		{
+			return;
+		}
+		son_index = fat_index;
+		fat_index = (son_index - 1) / 2;
+		//说明儿子已经到了队顶了hhh
+		if (son_index == dui_top)
+		{
+			return;
+		}
+
+	}
+
+
+}
+
+void heap_sink(int* arr, int dui_top, int dui_last)
+{
+
+	if (dui_top == dui_last)
+	{
+		return;
+	}
+	//记录儿子当前的下标
+	int fat_index = dui_top;
+	//记录父亲的下标;
+	int son_index = fat_index * 2 + 1;
+	while (son_index <= dui_last)
+	{  //因为有一个左孩子还有一个右孩子 所以要比较这两个孩子谁大谁小 应为要挑一个最大的当队顶
+		if (son_index + 1 <= dui_last)
+		{
+			arr[son_index] >= arr[son_index + 1] ? son_index : (son_index++);
+		}
+		if (arr[fat_index] < arr[son_index])
+		{
+			swap(arr, fat_index, son_index);
+		}
+		else
+		{
+			return;
+		}
+		fat_index = son_index;
+		son_index = fat_index * 2 + 1;
+	}
+
+
+
+
+}
+void d_p(int* arr1, int a, int b)
+{
+
+	if (a == b)
+	{
+		return;
+	}
+	int k = 0;
+	int* arr = new int[b-a+ 1];
+	for (int i=a;i<=b;i++)
+	{
+		arr[k] = arr1[i];
+		k++;
+	}
+	int left = 0;
+	int right = b - a;
+	//建立堆
+	int num_now;
+	for (num_now = left; num_now <= right; num_now++)
+	{
+		heap_inest(arr, left, num_now);
+	}
+	//下沉堆
+	int virtual_duilast = right;
+	while (virtual_duilast != left)
+	{
+		swap(arr, left, virtual_duilast);
+		virtual_duilast--;
+		heap_sink(arr, left, virtual_duilast);
+	}
+
+	k = 0;
+	for (int i = a; i <= b; i++)
+	{
+		arr1[i] = arr[k];
+		k++;
+	}
+
+	delete[]arr;
+}
+//实现归并排序 递推办法办法
+void merge(int* arr, int left, int right, int mid)
+{
+	//整体排序的步骤就是新创建一个列表 
+	//创建一个可以容纳这些数据的列表
+	int* arr1 = new int[right - left + 1];
+	int l_d = left;
+	int m_d = mid + 1;
+	int q_s = left;
+	int k = 0;
+	while (true)   //右边越界了
+	{
+		if (arr[l_d] > arr[m_d])
+		{
+			arr1[k] = arr[m_d];
+			m_d += 1;
+			k++;
+			if (m_d > right)
+			{
+				break;
+			}
+		}
+		else if (arr[l_d] <= arr[m_d])   //左边越界了
+		{
+			arr1[k] = arr[l_d];
+			k++;
+			l_d++;
+			if (l_d > mid)
+			{
+				break;
+			}
+		}
+
+
+
+
+
+
+	}
+	while (l_d <= mid)
+	{
+		for (int i = l_d; i <= mid; i++)
+		{
+			arr1[k] = arr[i];
+			k++;
+		}
+		break;
+	}
+	while (m_d <= right)
+	{
+		for (int i = m_d; i <= right; i++)
+		{
+			arr1[k] = arr[i];
+			k++;
+		}
+		break;
+	}
+	//拷贝数据
+	for (int i = 0; i < (right - left + 1); i++)
+	{
+		arr[q_s] = arr1[i];
+		q_s++;
+	}
+
+	delete[]arr1;
+
+
+}
+void g_b1(int* arr, int left, int right)
+{
+	//归并排序步骤，排序左边，排序右边，然后再整体排序
+	int mid = (right + left) / 2;
+	if (left == right)
+	{
+		return;
+	}
+	//先对左边排序
+	g_b1(arr, left, mid);
+	//对右边排序
+	g_b1(arr, mid + 1, right);
+	//整体做一个排序
+	merge(arr, left, right, mid);
+
+}
+
+
+//实现两种方法结果的比较 
+int dui_shuqi(int n)
+{
+	int k = 0;
+	while (k < n)
+	{
+		//随机生成一个数组
+		int long1 = 1 + rand() % 1000;   //数组的长度
+		int* arr1 = new int[long1];
+		int left = rand() % long1;
+		int right = rand() % long1;
+		int* arr2 = new int[long1];;
+		if (left > right)
+		{
+			int a = left;
+			left = right;
+			right = a;
+		}
+		for (int i = 0; i < long1; i++)
+		{
+			arr1[i] = rand() % 999;
+			arr2[i] = arr1[i];
+
+		}
+
+
+		d_p(arr1, left, right);
+
+		g_b1(arr2, left, right);
+
+		for (int i = 0; i < long1; i++)
+		{
+			if (arr2[i] != arr1[i])
+			{
+
+
+				cout << "出错了！------------------";
+				return 0;
+			}
+		}
+		k++;
+		delete[]arr2;
+		delete[]arr1;
+
+	}
+	cout << "完成测试！";
+	return 1;
+
+}
+int main()
+{
+	dui_shuqi(10000);
+}
